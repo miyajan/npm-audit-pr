@@ -1,0 +1,22 @@
+name: 'npm audit PR'
+description: 'Create a pull request for npm audit fix'
+author: 'miyajan'
+inputs:
+  token:
+    description: 'The GitHub Token to create a pull request.'
+    required: true
+  npm-directory:
+    description: 'The directory for npm audit fix. (Default: workspace)'
+    required: false
+    default: ''
+  base-branch:
+    description: 'The base branch name of pull request. (Default: default branch)'
+    required: false
+    default: ''
+  head-branch:
+    description: 'The head branch name of pull request. (Default: npm-audit-fix)'
+    required: false
+    default: npm-audit-fix
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

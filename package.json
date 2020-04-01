@@ -1,0 +1,47 @@
+{
+  "name": "npm-audit-pr",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GitHub Action to create a pull request for npm audit fix",
+  "main": "lib/main.js",
+  "scripts": {
+    "build": "tsc",
+    "format": "prettier --write **/*.ts",
+    "format-check": "prettier --check **/*.ts",
+    "lint": "eslint src/**/*.ts",
+    "pack": "ncc build",
+    "test": "jest",
+    "all": "npm ci && npm run build && npm run format && npm run lint && npm run pack && npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miyajan/npm-audit-pr.git"
+  },
+  "keywords": [
+    "actions",
+    "node",
+    "npm"
+  ],
+  "author": "miyajan",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^25.1.4",
+    "@types/node": "^13.9.3",
+    "@typescript-eslint/parser": "^2.25.0",
+    "@zeit/ncc": "^0.22.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-github": "^3.4.1",
+    "eslint-plugin-jest": "^23.8.2",
+    "jest": "^25.1.0",
+    "jest-circus": "^25.1.0",
+    "prettier": "^2.0.2",
+    "ts-jest": "^25.2.1",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "@actions/core": "^1.2.3",
+    "@actions/exec": "^1.0.3",
+    "@actions/github": "^2.1.1",
+    "@octokit/request-error": "^2.0.0"
+  }
+}
