@@ -77,6 +77,14 @@ async function createOrUpdateBranch(
   baseBranch: string,
   headBranch: string
 ): Promise<void> {
+  core.debug(`git fetch --force origin ${baseBranch}:${baseBranch}`)
+  const gitFetchResult = await git.fetch(baseBranch)
+  if (gitFetchResult.exitCode !== 0) {
+    throw new Error(
+      `Error: git fetch ${baseBranch} failed: ${JSON.stringify(gitFetchResult)}`
+    )
+  }
+
   core.debug(`git checkout -B ${headBranch} ${baseBranch}`)
   const gitCheckoutResult = await git.checkoutBranch(headBranch, baseBranch)
   if (gitCheckoutResult.exitCode !== 0) {
@@ -94,7 +102,7 @@ async function createOrUpdateBranch(
   }
 
   const message = '[npm-audit-pr] npm audit fix'
-  core.debug(`git commit -m ${message}`)
+  core.debug(`git commit -m "${message}"`)
   const gitCommitResult = await git.commit(message)
   if (gitCommitResult.exitCode !== 0) {
     throw new Error(

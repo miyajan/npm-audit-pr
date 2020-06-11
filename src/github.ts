@@ -34,7 +34,7 @@ export class GitHub {
       owner,
       repo,
       base: baseBranch,
-      head: headBranch,
+      head: `${owner}:${headBranch}`,
       state: 'open'
     }
     const listPullRequestResponse = await this.octokit.pulls.list(listParams)

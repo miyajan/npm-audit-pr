@@ -39,6 +39,12 @@ export class Git {
     this.configParams = configParams
   }
 
+  async fetch(branch: string): Promise<GitResult> {
+    return await this.executor.execute(
+      `${this.gitCommand()} fetch --force origin ${branch}:${branch}`
+    )
+  }
+
   async checkoutBranch(branch: string, startPoint: string): Promise<GitResult> {
     return await this.executor.execute(
       `${this.gitCommand()} checkout -B ${branch} ${startPoint}`

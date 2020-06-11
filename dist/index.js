@@ -1826,6 +1826,11 @@ class Git {
     setConfigParameters(configParams) {
         this.configParams = configParams;
     }
+    fetch(branch) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.executor.execute(`${this.gitCommand()} fetch --force origin ${branch}:${branch}`);
+        });
+    }
     checkoutBranch(branch, startPoint) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.executor.execute(`${this.gitCommand()} checkout -B ${branch} ${startPoint}`);
@@ -10703,7 +10708,7 @@ class GitHub {
                 owner,
                 repo,
                 base: baseBranch,
-                head: headBranch,
+                head: `${owner}:${headBranch}`,
                 state: 'open'
             };
             const listPullRequestResponse = yield this.octokit.pulls.list(listParams);
@@ -25027,6 +25032,11 @@ ${fixResult.stdout}
 exports.run = run;
 function createOrUpdateBranch(git, baseBranch, headBranch) {
     return __awaiter(this, void 0, void 0, function* () {
+        core.debug(`git fetch --force origin ${baseBranch}:${baseBranch}`);
+        const gitFetchResult = yield git.fetch(baseBranch);
+        if (gitFetchResult.exitCode !== 0) {
+            throw new Error(`Error: git fetch ${baseBranch} failed: ${JSON.stringify(gitFetchResult)}`);
+        }
         core.debug(`git checkout -B ${headBranch} ${baseBranch}`);
         const gitCheckoutResult = yield git.checkoutBranch(headBranch, baseBranch);
         if (gitCheckoutResult.exitCode !== 0) {
@@ -25038,7 +25048,7 @@ function createOrUpdateBranch(git, baseBranch, headBranch) {
             throw new Error(`Error: git add failed: ${JSON.stringify(gitAddAllResult)}`);
         }
         const message = '[npm-audit-pr] npm audit fix';
-        core.debug(`git commit -m ${message}`);
+        core.debug(`git commit -m "${message}"`);
         const gitCommitResult = yield git.commit(message);
         if (gitCommitResult.exitCode !== 0) {
             throw new Error(`Error: git commit failed: ${JSON.stringify(gitCommitResult)}`);
