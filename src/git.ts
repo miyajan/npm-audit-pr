@@ -39,6 +39,14 @@ export class Git {
     this.configParams = configParams
   }
 
+  async getCurrentBranch(): Promise<string> {
+    return (
+      await this.executor.execute(
+        `${this.gitCommand()} symbolic-ref HEAD --short`
+      )
+    ).stdout.trim()
+  }
+
   async fetch(branch: string): Promise<GitResult> {
     return await this.executor.execute(
       `${this.gitCommand()} fetch --force origin ${branch}:${branch}`
