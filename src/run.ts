@@ -77,12 +77,19 @@ async function createOrUpdateBranch(
   baseBranch: string,
   headBranch: string
 ): Promise<void> {
-  core.debug(`git fetch --force origin ${baseBranch}:${baseBranch}`)
-  const gitFetchResult = await git.fetch(baseBranch)
-  if (gitFetchResult.exitCode !== 0) {
-    throw new Error(
-      `Error: git fetch ${baseBranch} failed: ${JSON.stringify(gitFetchResult)}`
-    )
+  core.debug(`git symbolic-ref HEAD --short`)
+  const currentBranch = await git.getCurrentBranch()
+
+  if (currentBranch !== baseBranch) {
+    core.debug(`git fetch --force origin ${baseBranch}:${baseBranch}`)
+    const gitFetchResult = await git.fetch(baseBranch)
+    if (gitFetchResult.exitCode !== 0) {
+      throw new Error(
+        `Error: git fetch ${baseBranch} failed: ${JSON.stringify(
+          gitFetchResult
+        )}`
+      )
+    }
   }
 
   core.debug(`git checkout -B ${headBranch} ${baseBranch}`)

@@ -1826,6 +1826,11 @@ class Git {
     setConfigParameters(configParams) {
         this.configParams = configParams;
     }
+    getCurrentBranch() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return (yield this.executor.execute(`${this.gitCommand()} symbolic-ref HEAD --short`)).stdout.trim();
+        });
+    }
     fetch(branch) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.executor.execute(`${this.gitCommand()} fetch --force origin ${branch}:${branch}`);
@@ -25032,10 +25037,14 @@ ${fixResult.stdout}
 exports.run = run;
 function createOrUpdateBranch(git, baseBranch, headBranch) {
     return __awaiter(this, void 0, void 0, function* () {
-        core.debug(`git fetch --force origin ${baseBranch}:${baseBranch}`);
-        const gitFetchResult = yield git.fetch(baseBranch);
-        if (gitFetchResult.exitCode !== 0) {
-            throw new Error(`Error: git fetch ${baseBranch} failed: ${JSON.stringify(gitFetchResult)}`);
+        core.debug(`git symbolic-ref HEAD --short`);
+        const currentBranch = yield git.getCurrentBranch();
+        if (currentBranch !== baseBranch) {
+            core.debug(`git fetch --force origin ${baseBranch}:${baseBranch}`);
+            const gitFetchResult = yield git.fetch(baseBranch);
+            if (gitFetchResult.exitCode !== 0) {
+                throw new Error(`Error: git fetch ${baseBranch} failed: ${JSON.stringify(gitFetchResult)}`);
+            }
         }
         core.debug(`git checkout -B ${headBranch} ${baseBranch}`);
         const gitCheckoutResult = yield git.checkoutBranch(headBranch, baseBranch);
