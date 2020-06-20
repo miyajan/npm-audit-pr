@@ -25,6 +25,6 @@ export class Audit {
   }
 
   async fix(directory: string): Promise<AuditResult> {
-    return await this.executor.execute('npm audit fix', directory)
+    return await this.executor.execute('npm audit fix --force', directory)
   }
 }
