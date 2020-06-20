@@ -812,7 +812,7 @@ class Audit {
     }
     fix(directory) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.executor.execute('npm audit fix', directory);
+            return yield this.executor.execute('npm audit fix --force', directory);
         });
     }
 }
