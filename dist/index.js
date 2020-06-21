@@ -1831,6 +1831,11 @@ class Git {
             return (yield this.executor.execute(`${this.gitCommand()} symbolic-ref HEAD --short`)).stdout.trim();
         });
     }
+    diff() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.executor.execute(`${this.gitCommand()} diff`);
+        });
+    }
     fetch(branch) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.executor.execute(`${this.gitCommand()} fetch --force origin ${branch}:${branch}`);
@@ -25015,6 +25020,9 @@ function run() {
             if (fixResult.exitCode !== 0) {
                 throw new Error(`Error: npm audit fix failed: ${JSON.stringify(fixResult)}`);
             }
+            if (!(yield hasDiff(git))) {
+                throw new Error(`Error: vulnerabilities were found but they couldn't be fixed automatically\n${fixResult.stdout}`);
+            }
             yield createOrUpdateBranch(git, baseBranch, headBranch);
             const title = 'npm audit fix by npm-audit-pr action';
             const body = `npm audit
@@ -25035,6 +25043,12 @@ ${fixResult.stdout}
     });
 }
 exports.run = run;
+function hasDiff(git) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = yield git.diff();
+        return result.stdout.length > 0;
+    });
+}
 function createOrUpdateBranch(git, baseBranch, headBranch) {
     return __awaiter(this, void 0, void 0, function* () {
         core.debug(`git symbolic-ref HEAD --short`);
