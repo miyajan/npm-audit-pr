@@ -47,6 +47,10 @@ export class Git {
     ).stdout.trim()
   }
 
+  async diff(): Promise<GitResult> {
+    return await this.executor.execute(`${this.gitCommand()} diff`)
+  }
+
   async fetch(branch: string): Promise<GitResult> {
     return await this.executor.execute(
       `${this.gitCommand()} fetch --force origin ${branch}:${branch}`

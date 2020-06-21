@@ -46,6 +46,12 @@ export async function run(): Promise<void> {
       )
     }
 
+    if (!(await hasDiff(git))) {
+      throw new Error(
+        `Error: vulnerabilities were found but they couldn't be fixed automatically\n${fixResult.stdout}`
+      )
+    }
+
     await createOrUpdateBranch(git, baseBranch, headBranch)
 
     const title = 'npm audit fix by npm-audit-pr action'
@@ -70,6 +76,11 @@ ${fixResult.stdout}
   } catch (error) {
     core.setFailed(error.message)
   }
+}
+
+async function hasDiff(git: Git): Promise<boolean> {
+  const result = await git.diff()
+  return result.stdout.length > 0
 }
 
 async function createOrUpdateBranch(
