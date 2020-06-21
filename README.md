@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.0.0
-      - uses: miyajan/npm-audit-pr@v1.0.3
+      - uses: miyajan/npm-audit-pr@v1.0.4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 ```
